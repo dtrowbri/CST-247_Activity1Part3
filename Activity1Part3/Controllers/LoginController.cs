@@ -23,14 +23,14 @@ namespace Activity1Part3.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(UserModel model)
+        public ActionResult Login(UserModel user)
         {
             MyLogger.getInstance().Info("Entering LoginController.Login()");
-            MyLogger.getInstance().Info("Parameters are: " + new JavaScriptSerializer().Serialize(model));
+            MyLogger.getInstance().Info("Parameters are: " + new JavaScriptSerializer().Serialize(user));
             try
             {
                 SecurityService service = new SecurityService();
-                bool authenticated = service.Authenticate(model);
+                bool authenticated = service.Authenticate(user);
 
 
                 if (!ModelState.IsValid)
@@ -39,19 +39,29 @@ namespace Activity1Part3.Controllers
                 }
                 if (authenticated)
                 {
+                    Session["user"] = user;
                     MyLogger.getInstance().Info("Exit LoginController.Login() with login passing");
                     return View("LoginPassed");
                 }
                 else
                 {
+                    Session.Clear();
                     MyLogger.getInstance().Info("Exit LoginController.Login() with login failing");
                     return View("LoginFailed");
                 }
             }catch(Exception e)
             {
+                Session.Clear();
                 MyLogger.getInstance().Error("Exception LoginController.Login()" + e.Message);
                 return View("LoginFailed");
             }
+        }
+    
+        [HttpGet]
+        [CustomAuthorization]
+        public string Protected()
+        {
+            return "This text is a place holder";
         }
     }
 }
