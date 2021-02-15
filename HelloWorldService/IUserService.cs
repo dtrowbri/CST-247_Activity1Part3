@@ -28,6 +28,7 @@ namespace HelloWorldService
         [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetUser/{id}")]
         DTO GetUser(string id);
 
+        [AspNetCacheProfile("CacheFor60Seconds")]
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetAllUsers/")]
         DTO GetAllUsers();
