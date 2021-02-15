@@ -8,9 +8,11 @@ using Activity1Part3.Models;
 using Activity1Part3.Services.Business;
 using NLog;
 using Activity1Part3.Services.Utility;
+using System.Runtime.Caching;
 
 namespace Activity1Part3.Controllers
 {
+    [CustomAction]
     public class LoginController : Controller
     {
 
@@ -62,6 +64,35 @@ namespace Activity1Part3.Controllers
         public string Protected()
         {
             return "This text is a place holder";
+        }
+
+        
+        public ActionResult GetUsers()
+        {
+            MemoryCache cache = MemoryCache.Default;
+
+            List<UserModel> users;
+
+            users = (List<UserModel>)cache.Get("Users");
+
+            if (users == null) {
+                users = new List<UserModel>();
+                users.Add(new UserModel { Username = "dtrowbri", Password = "UnimaginativePassword1!" });
+                users.Add(new UserModel { Username = "brydonJ", Password = "blandPassw0rd" });
+                users.Add(new UserModel { Username = "JoshScott", Password = "passwordCreat1v1tyIsStillL0w" });
+                users.Add(new UserModel { Username = "MPritchard", Password = "ITSecurityPassw-rdAppr0v4l=%100" });
+
+                DateTimeOffset policy = new CacheItemPolicy().AbsoluteExpiration = DateTime.Now.AddMinutes(1);
+
+                cache.Set("Users", users, policy);
+
+                MyLogger.getInstance().Info("Adding users to cache!");
+            } else
+            {
+                MyLogger.getInstance().Info("Getting users from cache!");
+            }
+
+            return Content(new JavaScriptSerializer().Serialize(users));
         }
     }
 }
