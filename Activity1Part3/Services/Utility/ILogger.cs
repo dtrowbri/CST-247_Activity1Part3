@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Activity1Part3.Services.Utility
 {
-    interface ILogger
+    public interface ILogger
     {
         void Debug(string message);
         void Info(string message);
