@@ -8,6 +8,7 @@ using Activity1Part3.Services.Business;
 
 namespace Activity1Part3.Controllers
 {
+    [CustomAuthorization]
     public class TestLoggingService3Controller : Controller
     {
 

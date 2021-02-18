@@ -6,8 +6,8 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Activity1Part3.Models;
 using Activity1Part3.Services.Business;
-using NLog;
 using Activity1Part3.Services.Utility;
+
 using System.Runtime.Caching;
 
 namespace Activity1Part3.Controllers
@@ -15,7 +15,12 @@ namespace Activity1Part3.Controllers
     [CustomAction]
     public class LoginController : Controller
     {
+        private readonly ILogger logger;
 
+        public LoginController(ILogger logger)
+        {
+            this.logger = logger;
+        }
         //private static Logger logger = LogManager.GetLogger("myAppLoggerRules");
         // GET: Login
         [HttpGet]
@@ -27,8 +32,10 @@ namespace Activity1Part3.Controllers
         [HttpPost]
         public ActionResult Login(UserModel user)
         {
-            MyLogger.getInstance().Info("Entering LoginController.Login()");
-            MyLogger.getInstance().Info("Parameters are: " + new JavaScriptSerializer().Serialize(user));
+            //MyLogger.getInstance().Info("Entering LoginController.Login()");
+            //MyLogger.getInstance().Info("Parameters are: " + new JavaScriptSerializer().Serialize(user));
+            logger.Info("Entering LoginController.Login()");
+            logger.Info("Parameters are: " + new JavaScriptSerializer().Serialize(user));
             try
             {
                 SecurityService service = new SecurityService();
@@ -42,19 +49,22 @@ namespace Activity1Part3.Controllers
                 if (authenticated)
                 {
                     Session["user"] = user;
-                    MyLogger.getInstance().Info("Exit LoginController.Login() with login passing");
+                    //MyLogger.getInstance().Info("Exit LoginController.Login() with login passing");
+                    logger.Info("Exit LoginController.Login() with login passing");
                     return View("LoginPassed");
                 }
                 else
                 {
                     Session.Clear();
-                    MyLogger.getInstance().Info("Exit LoginController.Login() with login failing");
+                    //MyLogger.getInstance().Info("Exit LoginController.Login() with login failing");
+                    logger.Info("Exit LoginController.Login() with login failing");
                     return View("LoginFailed");
                 }
             }catch(Exception e)
             {
                 Session.Clear();
-                MyLogger.getInstance().Error("Exception LoginController.Login()" + e.Message);
+                //MyLogger.getInstance().Error("Exception LoginController.Login()" + e.Message);
+                logger.Error("Exception LoginController.Login()" + e.Message);
                 return View("LoginFailed");
             }
         }
@@ -86,10 +96,13 @@ namespace Activity1Part3.Controllers
 
                 cache.Set("Users", users, policy);
 
-                MyLogger.getInstance().Info("Adding users to cache!");
-            } else
+                //MyLogger.getInstance().Info("Adding users to cache!");
+                logger.Info("Adding users to cache!");
+            }
+            else
             {
-                MyLogger.getInstance().Info("Getting users from cache!");
+                //MyLogger.getInstance().Info("Getting users from cache!");
+                logger.Info("Getting users from cache!");
             }
 
             return Content(new JavaScriptSerializer().Serialize(users));

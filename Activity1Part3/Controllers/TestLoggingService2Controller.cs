@@ -8,6 +8,7 @@ using Unity;
 
 namespace Activity1Part3.Controllers
 {
+    [CustomAuthorization]
     public class TestLoggingService2Controller : Controller
     {
         [Dependency]

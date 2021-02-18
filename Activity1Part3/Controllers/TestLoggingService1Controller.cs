@@ -7,9 +7,10 @@ using Activity1Part3.Services.Utility;
 
 namespace Activity1Part3.Controllers
 {
+    [CustomAuthorization]
     public class TestLoggingService1Controller : Controller
     {
-
+        
         private readonly ILogger logger;
 
         public TestLoggingService1Controller(ILogger logger)
